@@ -10,36 +10,42 @@ import UIKit
 
 class ViewController: UIViewController {
 
+    // Wingload format
+    let wingLoadFormat = "%.2f"
+    
     // Weight Items
     @IBOutlet weak var weightSlider: UISlider!
-    @IBOutlet weak var weightLabel: UILabel!
+    @IBOutlet weak var weightText: UITextField!
     
     // Equipment Weight Items
     @IBOutlet weak var equipmentSlider: UISlider!
-    @IBOutlet weak var equipmentLabel: UILabel!
+    @IBOutlet weak var equipmentWeightText: UITextField!
     
     // Canopy Size Items
     @IBOutlet weak var canopySizeSlider: UISlider!
-    @IBOutlet weak var canopySizeLabel: UILabel!
+    @IBOutlet weak var canopySizeText: UITextField!
     
     // Wing Loading Items
     @IBOutlet weak var wingLoadingSlider: UISlider!
-    @IBOutlet weak var wingLoadingLabel: UILabel!
-    
+    @IBOutlet weak var wingLoadingText: UITextField!
     
     override func viewDidLoad() {
-        super.viewDidLoad()
-        
-        // call our initialize function(s)
         initializeSliderLabels();
+        super.viewDidLoad()
+        // call our initialize function(s)
+    }
+    
+    // overide touch to close keyboard
+    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+        self.view.endEditing(true)
     }
     
     // Setup default values for the slider labels
     func initializeSliderLabels() {
-        weightLabel.text      = String(weightSlider.value);
-        equipmentLabel.text   = String(equipmentSlider.value);
-        canopySizeLabel.text  = String(canopySizeSlider.value);
-        wingLoadingLabel.text = String(wingLoadingSlider.value);
+        weightText.text          = String(Int(weightSlider.value));
+        equipmentWeightText.text = String(Int(equipmentSlider.value));
+        canopySizeText.text      = String(Int(canopySizeSlider.value));
+        wingLoadingText.text     = String(format: wingLoadFormat, wingLoadingSlider.value);
     }
 
     @IBAction func didTouchUpUnits(_ sender: Any) {
@@ -50,28 +56,78 @@ class ViewController: UIViewController {
         print("Toggled Tandem Mode");
     }
 
-    @IBAction func didChangeWeightValue(_ sender: Any) {
-        let value = weightSlider.value;
-        weightLabel.text = String(value);
-        sliderChange();
+    @IBAction func didEnterWeight(_ sender: Any) {
+        let value = Int(weightText.text!);
+        changeWeightValue(value: value!);
+        valueChanged();
     }
+    
+    @IBAction func didEnterEquipmentWeight(_ sender: Any) {
+        let value = Int(equipmentWeightText.text!);
+        changeEquipmentWeightValue(value: value!);
+        valueChanged();
+    }
+    
+    @IBAction func didEnterCanopySize(_ sender: Any) {
+        let value = Int(canopySizeText.text!);
+        changeCanopySizeValue(value: value!)
+        valueChanged();
+    }
+
+    @IBAction func didEnterWingLoading(_ sender: Any) {
+        let value = Float(wingLoadingText.text!);
+        changeWingLoadingValue(value: value!)
+        valueChanged();
+    }
+    
+    @IBAction func didChangeWeightValue(_ sender: Any) {
+        let value = Int(weightSlider.value);
+        changeWeightValue(value: value)
+        valueChanged();
+    }
+    
+    func changeWeightValue(value: Int) {
+        weightSlider.value = Float(value);
+        weightText.text = String(value);
+        valueChanged();
+    }
+    
+    func changeEquipmentWeightValue(value: Int) {
+        equipmentSlider.value = Float(value);
+        equipmentWeightText.text = String(value);
+        valueChanged();
+    }
+    
+    func changeCanopySizeValue(value: Int) {
+        canopySizeSlider.value = Float(value);
+        canopySizeText.text = String(value);
+        valueChanged();
+    }
+    
+    func changeWingLoadingValue(value: Float) {
+        wingLoadingSlider.value = value;
+        wingLoadingText.text = String(format: wingLoadFormat, value)
+        valueChanged();
+    }
+    
     @IBAction func didChangeEquipmentWeightValue(_ sender: Any) {
-        let value = equipmentSlider.value;
-        equipmentLabel.text = String(value);
-        sliderChange();
+        let value = Int(equipmentSlider.value);
+        changeEquipmentWeightValue(value: value);
+        valueChanged();
     }
     @IBAction func didChangeCanopySizeValue(_ sender: Any) {
-        let value = canopySizeSlider.value;
-        canopySizeLabel.text = String(value);
-        sliderChange();
+        let value = Int(canopySizeSlider.value);
+        changeCanopySizeValue(value: value);
+        valueChanged();
     }
     @IBAction func didChangeWingLoadingValue(_ sender: Any) {
         let value = wingLoadingSlider.value;
         print("Wingloading slider changed to", value);
-        wingLoadingLabel.text = String(value)
-        sliderChange();
+        changeWingLoadingValue(value: value);
+        valueChanged();
     }
-    func sliderChange() {
+    func valueChanged() {
+        
         let weight             = weightSlider.value;
         let equipmentWeight    = equipmentSlider.value;
         let canopySize         = canopySizeSlider.value;
@@ -80,7 +136,7 @@ class ViewController: UIViewController {
                                                    canopySize: canopySize);
         
         wingLoadingSlider.value = calculatedWingLoad;
-        wingLoadingLabel.text   = String(calculatedWingLoad);
+        wingLoadingText.text   = String(format: wingLoadFormat, calculatedWingLoad);
     }
     func calculateWingLoad(weight: Float,
                            equipmentWeight: Float,

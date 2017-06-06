@@ -8,7 +8,7 @@
 
 import UIKit
 
-class ViewController: UIViewController {
+class ViewControllerAdvanced: UIViewController {
 
     // Wingload format
     let wingLoadFormat = "%.2f"
@@ -37,7 +37,7 @@ class ViewController: UIViewController {
     
     // overide touch to close keyboard
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
-        self.view.endEditing(true)
+        self.view.endEditing(true);
     }
     
     // Setup default values for the slider labels
@@ -80,12 +80,6 @@ class ViewController: UIViewController {
         valueChanged();
     }
     
-    @IBAction func didChangeWeightValue(_ sender: Any) {
-        let value = Int(weightSlider.value);
-        changeWeightValue(value: value)
-        valueChanged();
-    }
-    
     func changeWeightValue(value: Int) {
         weightSlider.value = Float(value);
         weightText.text = String(value);
@@ -109,6 +103,13 @@ class ViewController: UIViewController {
         wingLoadingText.text = String(format: wingLoadFormat, value)
         valueChanged();
     }
+    
+    @IBAction func didChangeWeightValue(_ sender: Any) {
+        let value = Int(weightSlider.value);
+        changeWeightValue(value: value)
+        valueChanged();
+    }
+    
     
     @IBAction func didChangeEquipmentWeightValue(_ sender: Any) {
         let value = Int(equipmentSlider.value);
@@ -138,6 +139,7 @@ class ViewController: UIViewController {
         wingLoadingSlider.value = calculatedWingLoad;
         wingLoadingText.text   = String(format: wingLoadFormat, calculatedWingLoad);
     }
+    
     func calculateWingLoad(weight: Float,
                            equipmentWeight: Float,
                            canopySize: Float) -> Float {
